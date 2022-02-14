@@ -3,13 +3,13 @@
   \author Christian Mueller
   \brief Implementation of the class yosEigenState 
  */
-
+#include <LLLlib/yosEigenState.hpp>
 #include <vector>
 #include <fstream>
 #include <complex>
 
 
-#include <LLLlib/yosEigenState.hpp>
+
 #include <complex>
 
 #include <LLLlib/LLLlib.h>
@@ -23,11 +23,9 @@
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_multimin.h>
 #include <utils/CRandomizerGsl.h>
-#ifdef MKL
-#include <mkl_rci.h>
-#include <mkl.h>
+
 #include <utils/CRandomizerMkl.h>
-#endif
+
 
 using std::complex;
 
@@ -35,9 +33,7 @@ using std::complex;
 
 void objfun(int *, int *, int *, int *, double *, double *, double *, int *, int *, double *);
 
-void confun(int *, int *, int *, int *, int *, double *, double *, double *);
 void (*pObjfun) (int *, int *, int *, int *, double *, double *, double *, int *, int *, double *);
-void (*pConfun)(void);
 // For Intel minimizer
 void jacobiObjFun(MKL_INT  *, MKL_INT *, double *, double *);
 void (*pjacobiObjFun)(MKL_INT *, MKL_INT *, double *, double *);
@@ -46,7 +42,7 @@ void (*pjacobiObjFun)(MKL_INT *, MKL_INT *, double *, double *);
 yosEigenState * yosEigenState::m_instance = 0;   
 
 
-#ifdef MKL 
+
 void my_f (MKL_INT *m, MKL_INT *n, double *x, double *fvec)
 {
 	//ignore m and n
@@ -60,7 +56,6 @@ void my_f (MKL_INT *m, MKL_INT *n, double *x, double *fvec)
 
 
 }
-#endif
 
 double my_f(const gsl_vector *v, void *params)
 {
@@ -80,7 +75,7 @@ double my_f(const gsl_vector *v, void *params)
 		std::complex <double> fctVal = yosEigenState::getInstance()->sumofSPWavefunctions(0,x[0],x[1]);
 		//	   return (fctVal.real());
 
-		double absFct = std::abs(fctVal);
+
 		gsl_complex z ;
 
 		GSL_SET_COMPLEX(&z, fctVal.real(), fctVal.imag());
@@ -558,7 +553,7 @@ void yosEigenState::addElectronPositions(CxPeriodicPosition *newElectronSites)
 
 	// Allocation of Resources
 
-	for (int index = 0; index < myBasis->getNe(); index++)
+	for (unsigned int index = 0; index < myBasis->getNe(); index++)
 	{
 		if (newElectronSites == 0)
 		{
@@ -689,8 +684,8 @@ bool yosEigenState::calculateFixedPart(void)
 					//	       glLogger.debug( "Found the row to be cut");
 					continue;
 				}
-				subMatrix[subIndex].real = slaterMat[slaterIndex].real();
-				subMatrix[subIndex].imag = slaterMat[slaterIndex].imag();
+				subMatrix[subIndex] = slaterMat[slaterIndex];
+				//subMatrix[subIndex].imag = slaterMat[slaterIndex].imag();
 
 
 
@@ -732,7 +727,7 @@ bool yosEigenState::calculateFixedPart(void)
      Now multiplying with sqrt(NE) (factor from slaterderterminante)
 	 */
 	double vorFaktor = sqrt((float)factorial(Ne));
-	for (int index = 0; index < myBasis->getNm(); index++)
+	for (unsigned int index = 0; index < myBasis->getNm(); index++)
 	{
 		fixedPart[index] = fixedPart[index]/vorFaktor;
 		glLogger.info("FixedPart returns fixedPart[%d] = (%f) + i(%f)", index,fixedPart[index].real(),fixedPart[index].imag() );
@@ -1008,7 +1003,7 @@ complex <double> yosEigenState::sumofSPWavefunctions(const int  stateNo, CxPosit
 	complex <double> retVal(0,0);
 
 	//  glLogger.debug("Entering yosEigenState::sumofSPWavefunctions");
-	for (int jIndex = 0; jIndex < myBasis->getNm(); jIndex++)
+	for (unsigned  int jIndex = 0; jIndex < myBasis->getNm(); jIndex++)
 	{
 		complex <double> tempVal;
 		tempVal = myBasis->getState(stateNo)->SPwaveFct(jIndex,
@@ -1051,7 +1046,7 @@ complex <double> yosEigenState::sumofdySPWavefunctions(const int  stateNo, CxPos
 	complex <double> retVal(0,0);
 
 
-	for (int jIndex = 0; jIndex < myBasis->getNm(); jIndex++)
+	for (unsigned  int jIndex = 0; jIndex < myBasis->getNm(); jIndex++)
 	{
 
 		retVal = myBasis->getState(stateNo)->SPwaveFctdy(jIndex,
@@ -1077,7 +1072,7 @@ complex <double> yosEigenState::sumofdxSPWavefunctions(const int  stateNo, CxPos
 	complex <double> retVal(0,0);
 
 
-	for (int jIndex = 0; jIndex < myBasis->getNm(); jIndex++)
+	for (unsigned int jIndex = 0; jIndex < myBasis->getNm(); jIndex++)
 	{
 
 		retVal = myBasis->getState(stateNo)->SPwaveFctdx(jIndex,
@@ -1486,9 +1481,8 @@ dComplex summedWavefunction(double x, double y, dComplex *prefactors, int Nm, in
 	if (x && y && prefactors && Ne > 0)
 	{
 	}
-	dComplex retVal;
-	retVal.real = 0.0;
-	retVal.imag = 0.0;
+	dComplex retVal(0.0,0.0);
+
 
 	for (int jIndex =0; jIndex < Nm ; jIndex++)
 	{
@@ -1831,7 +1825,7 @@ float yosEigenState::getWeight(void)
 			throw CxErrors("No fixed electrons available");
 		}
 	}
-	for (int index = 0; index < myBasis->getNm(); index++)
+	for (unsigned int index = 0; index < myBasis->getNm(); index++)
 	{
 		retVal = retVal + abs(fixedPart[index]);
 	}
@@ -2282,9 +2276,10 @@ int yosEigenState::searchIntel(void)
 		{
 			throw CxErrors("Error while finding minimum ");
 		}
+		std::cerr << "solver returned " << RCI_Request<<std::endl;
 		glLogger.info("solver returned (%d)", RCI_Request);
 		if (RCI_Request == -1 || RCI_Request == -2 || RCI_Request == -3 ||
-				RCI_Request == -4 || RCI_Request == -5 || RCI_Request == -6 )
+				RCI_Request == -4 || RCI_Request == -5 || RCI_Request == -6 || RCI_Request >10)
 		{
 			loopControl = 0;
 
@@ -2295,7 +2290,7 @@ int yosEigenState::searchIntel(void)
 		case 1:
 			fctVal = sumofSPWavefunctions(0,x[0],x[1]);
 			//glLogger.info("Calculate function at (%f), (%f), = (%f) + i (%f)", x[0], x[1], fctVal.real(), fctVal.imag());
-
+			std::cerr << fctVal <<std::endl;
 			fvec[0]=fctVal.real();
 			fvec[1]=fctVal.imag();
 			break;
@@ -2343,7 +2338,7 @@ int yosEigenState::searchIntel(void)
 				*/
 		double aToB = 1.0;
 						CxPeriodicPosition tempPosition(x[0],x[1] , aToB );
-						double testValue = sumofSPWavefunctions(0,tempPosition).real();
+						//double testValue = sumofSPWavefunctions(0,tempPosition).real();
 						tempPosition.setEpsilon(1e-05);
 						//double fctValAbs = cabs(fctVal);
 						//glLogger.info("Function value is %f", fctValAbs);

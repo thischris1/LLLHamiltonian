@@ -35,7 +35,9 @@ m_WF_y(-1.0),
 m_pWaveFct (0),
   m_pWaveFctdx (0),
   m_pWaveFctdy (0),
-state_(0)
+state_(0),
+shuffled(0),
+st_origUnshuffled(0)
 { 
   
   obs_totJ.knownInAdvance = false;
@@ -90,7 +92,9 @@ yosBasis::yosBasis(const yosBasis &rhs):
 	m_pWaveFct(0),
         m_pWaveFctdx(0),
         m_pWaveFctdy(0),
-        state_(0)
+        state_(0),
+		shuffled(0),
+		st_origUnshuffled(0)
 {
         // Do copying here?
 
@@ -171,17 +175,17 @@ yosState * yosBasis::getState(long index) const
 	
 }
 
-int yosBasis::getNe() const 
+unsigned int yosBasis::getNe() const
 {
 	return Ne_;
 }
 
-int yosBasis::getNm() const 
+unsigned int yosBasis::getNm() const
 {
 	return Nm_;
 }
 
-int yosBasis::getSpinYes() const 
+unsigned int yosBasis::getSpinYes() const
 {
 	return spinYes;
 }
@@ -190,7 +194,7 @@ int yosBasis::increaseNm(int increment)
 {
   if(increment<0) return -1;
   Nm_ += increment;
-  for(int i=0;i<dim;i++)
+  for(unsigned int i=0;i<dim;i++)
    // state_[i]->increaseNm(increment);
   glLogger.warning("new Nm_:%d",Nm_);
   return 0;
@@ -205,7 +209,7 @@ double yosBasis::norm(int i_st) {return 1.0;}
 int yosBasis::broadcastAspectToAllStates(double new_aToB)
 {
   int retVal=0;
-  for(int i=0;i<dim;i++)
+  for(unsigned int i=0;i<dim;i++)
     retVal+=state_[i]->setAspect(new_aToB);
   if(retVal) return 1; /* There has been some problem while 
 			  setting the aspect ratios. */
@@ -229,7 +233,7 @@ void yosBasis::writeBasisToFile(FILE *out)
 {
   for(int i=0;i<dim;i++)
     {
-      for(int l=0;l<Ne_;l++)
+      for(unsigned int l=0;l<Ne_;l++)
 	{
 	  fprintf(out,"%d",state_[i]->j(l));
 	  if(state_[i]->spin(l)) fprintf(out,"+");
@@ -263,10 +267,11 @@ int yosBasis::getBasisFromFile(FILE *in,int new_dim)
   capacity = dim;
   for(int i=0;i<dim;i++)
     {
-      for(int l=0;l<Ne_;l++)
+      for(unsigned int l=0;l<Ne_;l++)
 	{
 	  switch(getJSCharByChar(in,j_l+l,spin_l+l)){
-	  case -1 : ;
+	  case -1 :
+		  break;
 	  case  1 :throw CxErrors("Wrong type of the input file");
 	  default:;
 	  }
@@ -284,12 +289,12 @@ double yosBasis::getAspectRatio()const
 }
 int yosBasis::mergeBasis(yosBasis &basToAdd)
 {  
-  int new_dim;
+  unsigned int new_dim;
   if(Ne_!=basToAdd.getNe() || Nm_!=basToAdd.getNm())
     {glLogger.error("yosBasis::mergeBasis Bases incompatible (Ne or Nm are not equal).\n");exit(1);}
   new_dim=dimension()+basToAdd.dimension();
   yosState **new_state=new yosState*[new_dim];
-  int i;
+  unsigned int i;
   for(i=0;i<dimension();i++) // The new basis consists of the old one...
     new_state[i]=state_[i];
   for(;i<new_dim;i++) // ...plus the new one.
@@ -308,7 +313,7 @@ int yosBasis::amITheSameAs(FILE *in)
   char c;
   for(int i=0;i<dim;i++)
     {
-      for(int l=0;l<Ne_;l++)
+      for(unsigned int l=0;l<Ne_;l++)
 	{
 	  switch(getJSCharByChar(in,&j_l,&spin_l)){
 	  case  1 : 
@@ -386,7 +391,7 @@ Routines for generation of various bases
 */
 int yosBasis::genBasisForConst_J_noSpin(int reqJ,long int guessDim)
 {
-  int nr,next;
+  int next;
   int *js;
 
   obs_totJ.knownInAdvance = true; obs_totJ.iVal=reqJ;
@@ -400,10 +405,10 @@ int yosBasis::genBasisForConst_J_noSpin(int reqJ,long int guessDim)
   glLogger.info(" - Spin polarized, all %d-electron states with total J=%d.\n",Ne_,reqJ);
   dim=0;
   js=new int[Ne_];
-  for(int i=0;i<Ne_;i++) js[i]=0;
+  for(unsigned int i=0;i<Ne_;i++) js[i]=0;
   setCapacity(guessDim);
   //state_= new yosState*[guessDim];
-  nr=0;next=0;  
+  next=0;
   while(!next) 
     {
       if(totJ(js)==reqJ)
@@ -482,7 +487,7 @@ int yosBasis::genBasis_allJ_noSpin()
 */
 int yosBasis::genBasis_allJ_noSpin()
 {
-  int nr,next;
+  int next;
   int *js;
 
   int new_dim;
@@ -494,7 +499,7 @@ int yosBasis::genBasis_allJ_noSpin()
 
   // dimension = # of states(Nm) over # of fermions(Ne)
   double tmp_dim = 1.0;
-  for (int i=0; i<Ne_; i++) tmp_dim = tmp_dim * (Nm_-i)/(Ne_-i);
+  for (unsigned int i=0; i<Ne_; i++) tmp_dim = tmp_dim * (Nm_-i)/(Ne_-i);
   new_dim = (int)rint(tmp_dim);
 
   setCapacity(new_dim);
@@ -506,9 +511,9 @@ int yosBasis::genBasis_allJ_noSpin()
   glLogger.info(" - Spin polarized, all %d-electron states \n",Ne_);
   dim=0;
   js=new int[Ne_];
-  for(int i=0;i<Ne_;i++) js[i]=i;
+  for(unsigned int i=0;i<Ne_;i++) js[i]=i;
   
-  nr=0;
+
   do 
     {
       yosState *pNew_state = new yosState(Ne_,Nm_,js);
@@ -542,7 +547,7 @@ int yosBasis::genBasis_allJ_noSpin()
 */
 int yosBasis::genBasis_allSz_allJ()
 {
-  int nr,next;
+  int next;
 
   int new_dim;
 
@@ -553,7 +558,7 @@ int yosBasis::genBasis_allSz_allJ()
 
   // dimension = (2 * # of states(Nm)) over # of fermions(Ne) (2* for spin)
   double tmp_dim = 1.0;
-  for (int i=0; i<Ne_; i++) tmp_dim = tmp_dim * (2*Nm_-i)/(Ne_-i);
+  for (unsigned int i=0; i<Ne_; i++) tmp_dim = tmp_dim * (2*Nm_-i)/(Ne_-i);
   new_dim = (int)rint(tmp_dim);
 
   setCapacity(new_dim);
@@ -571,15 +576,15 @@ int yosBasis::genBasis_allSz_allJ()
   int *spin=new int[Ne_];
   int maxS=1;
   int totSz,itmp;
-  for(int i=0;i<Ne_;i++) {js[i]=0;maxS*=2;}
-  nr=0;next=0;  
+  for(unsigned int i=0;i<Ne_;i++) {js[i]=0;maxS*=2;}
+  next=0;
   while(!next) 
     {
       for(int i=0;i<maxS;i++)
       {
 	totSz=0;
 	itmp=i;
-	for(int j=0;j<Ne_;j++)
+	for(unsigned int j=0;j<Ne_;j++)
 	{spin[j]=itmp%2;totSz+=itmp%2;itmp=itmp/2;}
 	totSz=2*totSz-Ne_;  // actually not needed here
 	if(!checkPauli_withSpin(js,spin)) continue;
@@ -618,7 +623,7 @@ int yosBasis::checkPauli_withoutSpin(int *spat)
      it's simple here: only states with two equal j's are excluded
   */
 { 
-  for(int i=0;i<Ne_-1;i++)
+  for(unsigned int i=0;i<Ne_-1;i++)
     if(spat[i]==spat[i+1]) return 0;
   return(1);                            
 }
@@ -639,7 +644,7 @@ int yosBasis::checkPauli_withoutSpin(int *spat)
  */
 int yosBasis::genBasis_allSz_constJ(int reqJ,long int guessDim)
 {
-  int nr,totSz,maxS,itmp,next;
+  int totSz,maxS,itmp,next;
   int *js,*spin;
 
   obs_totJ.knownInAdvance = true; obs_totJ.iVal=reqJ;
@@ -657,11 +662,11 @@ int yosBasis::genBasis_allSz_constJ(int reqJ,long int guessDim)
   js=new int[Ne_];
   spin=new int[Ne_];
   maxS=1;
-  for(int i=0;i<Ne_;i++) {js[i]=0;maxS*=2;}
+  for(unsigned int i=0;i<Ne_;i++) {js[i]=0;maxS*=2;}
   
   setCapacity(guessDim);
   //state_=new yosState*[guessDim];
-  nr=0;next=0;  
+  next=0;
   while(!next) 
     {
       if(totJ(js)==reqJ)
@@ -670,7 +675,7 @@ int yosBasis::genBasis_allSz_constJ(int reqJ,long int guessDim)
 	    {
 	      totSz=0;
 	      itmp=i;
-	      for(int j=0;j<Ne_;j++)
+	      for(unsigned int j=0;j<Ne_;j++)
 		{spin[j]=itmp%2;totSz+=itmp%2;itmp=itmp/2;}
 	      totSz=2*totSz-Ne_;  // actually not needed here
   	      if(!checkPauli_withSpin(js,spin)) continue;
@@ -735,13 +740,13 @@ int yosBasis::genBasisForConst_J_Sz(int reqJ,int reqSz,long int guessDim)
   \brief The core of genBasisForConst_J_Sz(...) (protected method). Puts the
   generated states into output.
 */
-int yosBasis::createAll_oneSz_oneJ(int Ne,int Nm,
+int yosBasis::createAll_oneSz_oneJ(unsigned int Ne,unsigned int Nm,
 				   int reqJ,int reqSz,long int guessDim)
 {
   vector<yosState*> tmpVec(guessDim);
   const int tmpStr_len = 5*Ne+3;
   char *tmpStr=new char[tmpStr_len];
-  int nr,totSz=0,maxS,itmp,next;
+  int totSz=0,maxS,itmp,next;
   int *js,*spin;
 
   if(Ne != Ne_) 
@@ -760,7 +765,7 @@ int yosBasis::createAll_oneSz_oneJ(int Ne,int Nm,
 
 
   //state=new yosState[guessDim](Ne,Nm,js);
-  nr=0;next=0;  
+  next=0;
   while(!next) 
     {
       if(totJ(js,Nm)==reqJ)
@@ -818,7 +823,7 @@ int yosBasis::nextSt(int *my_js,int Nm)
   while(my_js[j]>=Nm-1 && j>=0) j--;
   if(j<0) {for(j=0;j<Ne_;my_js[j]=0,j++);return(1);}
   my_js[j]++;
-  for(int i=j+1;i<Ne_;i++) 
+  for(unsigned int i=j+1;i<Ne_;i++)
     my_js[i]=my_js[j];
   return(0);
 }
@@ -831,7 +836,7 @@ int yosBasis::totJ(int *my_js)
 int yosBasis::totJ(int *my_js,int Nm) 
 {
   int sum=0;
-  for(int j=0;j<Ne_;sum+=my_js[j],j++);
+  for(unsigned int j=0;j<Ne_;sum+=my_js[j],j++);
   return(sum % Nm);
 }
 
@@ -849,7 +854,7 @@ int yosBasis::checkPauli_withSpin(int *spat,int *spin)
     {
       // states |...2+2-...> and |...2-2+...> lead to the same antisym. state
       if(spat[i]==spat[i+1]) if(spin[i]>=spin[i+1]) return(0);
-      for(int j=i+1;j<Ne_;j++)
+      for(unsigned int j=i+1;j<Ne_;j++)
 	if(checkSymmetry(spat,spin,i,j)) return(0);    
     }
   return(1);                            
@@ -957,7 +962,7 @@ void yosBasis::initWFCache (void)
 void yosBasis::setWFfluxes (double alpha1, double alpha2)
 {
   // tell all states
-  for (int i=0; i<dimension(); i++)
+  for (unsigned int i=0; i<dimension(); i++)
     state_[i]->setSolenoidFluxes (alpha1, alpha2);
 }
 
@@ -971,7 +976,7 @@ void yosBasis::setWFCacheForXY (double x, double y)
     {
       //std::cout << " - calculating wavefunctions for (x=" << x << ", y=" << y << ")\n";
           
-      for (int i=0; i<Nm_; i++)
+      for (unsigned int i=0; i<Nm_; i++)
 	{
 	  m_pWaveFct[i] = state_[0]->SPwaveFct (i, x, y);
 	  m_pWaveFctdx[i] = state_[0]->SPwaveFctdx (i, x, y);
@@ -983,19 +988,19 @@ void yosBasis::setWFCacheForXY (double x, double y)
     }  
 }
 
-std::complex<double> yosBasis::getCachedWF (int j) const
+std::complex<double> yosBasis::getCachedWF (unsigned int j) const
 {
   assert (j >= 0 && j < Nm_);
   return m_pWaveFct[j];
 }
 
-std::complex<double> yosBasis::getCachedWFdx (int j) const
+std::complex<double> yosBasis::getCachedWFdx (unsigned int j) const
 {
   assert (j >= 0 && j < Nm_);
   return m_pWaveFctdx[j]; 
 }
 
-std::complex<double> yosBasis::getCachedWFdy (int j) const
+std::complex<double> yosBasis::getCachedWFdy (unsigned int j) const
 {
   assert (j >= 0 && j < Nm_);
   return m_pWaveFctdy[j];
@@ -1027,7 +1032,7 @@ int yosBasis::test_totJ()
   for(int i=0;i<dim;i++)
     {
       totJ = 0;
-      for(int l=0;l<Ne_;l++)
+      for(unsigned int l=0;l<Ne_;l++)
 	totJ += state_[i]->j(l);
       totJ = (totJ % Nm_);
       if(i==0) all_totJ = totJ;
@@ -1057,7 +1062,7 @@ all_totSz=0;
   for(int i=0;i<dim;i++)
     {
       totSz = 0;
-      for(int l=0;l<Ne_;l++)
+      for(unsigned int l=0;l<Ne_;l++)
 	totSz += state_[i]->spin(l);
       totSz = 2*totSz - Ne_;
       if(i==0) all_totSz = totSz;
@@ -1093,7 +1098,7 @@ int yosBasis::createSignatures()
   for(int i=0;i<dim;i++)
     {
       jsDoSignature[i] = 0; jsUpSignature[i] = 0; 
-      for(int l=0;l<Ne_;l++)
+      for(unsigned int l=0;l<Ne_;l++)
 	{
 	  tmp_j = 1 << (state_[i])->j(l); 
 	  if((state_[i])->spin(l))
@@ -1120,7 +1125,7 @@ int yosBasis::shuffleSpins(int i,int k_from,int k_to)
       for(int j=k_from;j<k_to;j++) 
 	new_spins[j]=(state_[i])->spin(j+1);
       new_spins[k_to]=(state_[i])->spin(k_from);
-      for(int j=k_to+1;j<Ne_;j++) 
+      for(unsigned int j=k_to+1;j<Ne_;j++)
 	new_spins[j]=(state_[i])->spin(j);
     }
   else
@@ -1131,10 +1136,10 @@ int yosBasis::shuffleSpins(int i,int k_from,int k_to)
       new_spins[k_to]=(state_[i])->spin(k_from);
       for(int j=k_to+1;j<k_from+1;j++) 
 	new_spins[j]=(state_[i])->spin(j-1);
-      for(int j=k_from+1;j<Ne_;j++) 
+      for(unsigned int j=k_from+1;j<Ne_;j++)
 	new_spins[j]=(state_[i])->spin(j);
     }
-  for(int j=0;j<Ne_;j++)
+  for(unsigned int j=0;j<Ne_;j++)
     js[j]=(state_[i])->j(j);
   st_origUnshuffled=state_[i];
   state_[i]=new yosState(Ne_,Nm_,js,new_spins);

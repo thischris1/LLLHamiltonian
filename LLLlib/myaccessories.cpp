@@ -2,7 +2,7 @@
 /* Last updated 27.09.02.          */
 
 #include<myaccessories.hpp>
-
+#include <logger.hpp>
 void SeekLF(FILE* file)
 {
   char c;
@@ -86,7 +86,7 @@ FILE *testfopen(char *name)
   file=fopen(name,"r");
   if(file==NULL)
     {
-      printf("No file ");printf(name);printf(" so quitting.\n");
+      ERROR("No file,  so quitting.\n");
       exit(1);
     }         
   return(file);
@@ -98,9 +98,7 @@ FILE *testfopenW(char *name)
   file=fopen(name,"w");
   if(file==NULL)
     {
-      printf("Could not open file ");
-      printf(name);
-      printf(" so quitting.\n");
+      ERROR("Could not open file so quitting.\n");
       exit(1);
     }         
   return(file);
@@ -222,9 +220,7 @@ void Npercent(double x,FILE *f)
 
 
 
-/*!
-  \todo there is certainlay a mathlib function somewhere
-*/
+
 
 long factorial(long in)
 {

@@ -9,9 +9,9 @@
 
 	
 */ 
-#ifdef MKL
+#include <LLLlib/Types.hpp>
 #include <mkl_rci.h>
-#endif
+
  
 #include <vector>
 #include <LLLlib/persist_eigSt.hpp>

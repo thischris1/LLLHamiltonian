@@ -61,7 +61,7 @@ yosBasis(const std::string & fileName);
   generated states into output.
 */
 
-  int createAll_oneSz_oneJ(int Ne, int Nm,
+  int createAll_oneSz_oneJ(unsigned int Ne, unsigned int Nm,
 			   int reqJ,int reqSz,long int guessDim);
 
 
@@ -109,9 +109,9 @@ yosBasis(const std::string & fileName);
   /* Returns a pointer to the i-th vector of the set. */
 
   /* Asking for parameters of the basis */
-  int getNe() const;
-  int getNm() const;
-  int getSpinYes() const; 
+  unsigned int getNe() const;
+  unsigned int getNm() const;
+  unsigned int getSpinYes() const;
 
   int increaseNm(int increment);
 
@@ -165,9 +165,9 @@ yosBasis(const std::string & fileName);
   void setWFfluxes (double alpha1, double alpha2);
  bool readFromFile(FILE * in);
   // getters for wavefunctions / derivatives
-  std::complex<double> getCachedWF (int j) const;
-  std::complex<double> getCachedWFdx (int j) const;
-  std::complex<double> getCachedWFdy (int j) const;
+  std::complex<double> getCachedWF (unsigned int j) const;
+  std::complex<double> getCachedWFdx (unsigned int j) const;
+  std::complex<double> getCachedWFdy (unsigned int j) const;
 
   // change all j->j+shift (all Ne_ numbers in each state)
   int shiftRight_allStates(int shift);
@@ -231,11 +231,11 @@ private:
    * Member functions
    */
 //const long int MAX_DIM=10000;        // Maximal Nr. of basis vectors
-  int Ne_;
-  int Nm_;
+  unsigned int Ne_;
+  unsigned int Nm_;
   
-  int spinYes;
-  int capacity;
+  unsigned int spinYes;
+  unsigned int capacity;
   
   int *jsUpSignature;
   int *jsDoSignature;        // binary shortcuts (occupation repr.) for basis states 

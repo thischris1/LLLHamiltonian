@@ -200,7 +200,7 @@ std::complex<double> LLLRandomLandauMatrix::get_U_ofK(int row, int col) const
 		retVal= m_coefficents[tempIndex];
 		glLogger.info("Random Matrix element (%d),(%d) = (%f)", row, col, retVal.real());	
 	}
-	catch (std::exception e)
+	catch (std::exception &e)
 	{
 		glLogger.error("Trying to read out of bounds (%d),(%d), %s", row, col, e.what());
 		throw CxIndextoSmallError(__FILE__, __LINE__); 

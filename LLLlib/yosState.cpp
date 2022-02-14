@@ -493,7 +493,7 @@ else {x=x-1.0;}
   if (j < 0 || j >= Nm_) 
     {
      glLogger.info( "State number (j) is out of range [0..Nm-1]");
-      return std::complex<double>(-1);
+      return std::complex<double>(-1,0.0);
     }
 
   /*

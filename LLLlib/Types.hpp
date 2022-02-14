@@ -2,6 +2,13 @@
 #define TYPES_HPP
 
 #include <complex>
+#define MKL_Complex16 std::complex<double>
+#include <mkl.h>
+
+#include <mkl_lapack.h>
+
+
+typedef MKL_Complex16 dComplex;
 #include <vector>
 #include <geometry/CxPeriodicPosition.hpp>
 #include <geometry/CxVortex.hpp>
@@ -18,15 +25,5 @@ typedef double MDOUBLE;
 typedef  std::complex<MDOUBLE> CMDCOMPLEX;
 typedef std::vector<MDOUBLE> DOUBLE_VECTOR;
 typedef std::vector<CMDCOMPLEX> COMPLEX_VECTOR;
-#ifdef NAG
-	typedef struct{double real,imag;} dComplex;
-#endif
-#ifdef MKL
-	#include <mkl.h>
-	typedef MKL_Complex16 dComplex;
-#endif
-#ifdef GSL
-	typedef struct{double real,imag;} dComplex;
-#endif 
 
 #endif

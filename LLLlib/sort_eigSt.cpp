@@ -46,9 +46,11 @@ void sort_eigSt::ctorBody(int new_Ne,int new_Nm,int new_sysType,int new_eigsToFi
   case 1:
     outF_bas=new FILE*[(Ne/2+1)*Nm];
     outF_vec=new FILE*[nrOutChnl];
+    break;
   case 2:
     outF_bas=new FILE*[Nm];
     outF_vec=new FILE*[NrParSteps];
+    break;
   }
   s=0;
 

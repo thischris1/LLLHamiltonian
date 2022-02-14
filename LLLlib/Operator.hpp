@@ -10,7 +10,7 @@
 
 #ifndef OPERATOR_HPP
 #define OPERATOR_HPP
-
+#include <LLLlib/Types.hpp>
 #include<stdio.h>
 #include<math.h>
 #include<cmath>
@@ -22,7 +22,7 @@
 #include<State.hpp>
 #include<Basis.hpp>
 #include<myaccessories.hpp>
-#include <LLLlib/Types.hpp>
+
 #include<time.h>
 #include<iostream>
 #include<fstream>
@@ -31,7 +31,7 @@ class Operator
 {
 
 public:
-  typedef enum {FULL_REAL,SPARSE_REAL,FULL_COMPLEX, SPARSE_COMPLEX} MATRIX_TYPE;
+  typedef enum {FULL_REAL,SPARSE_REAL,FULL_COMPLEX, SPARSE_COMPLEX,SPARSE_COMPLEX_EIGEN} MATRIX_TYPE;
 
 protected:
   // Expected type of the operator matrix
@@ -64,22 +64,24 @@ protected:
   double *mat_sp;
   long int nz_elements;
   double *x;
-    //MaxNr of nonzero els. in sparse mat.   .  .  .   
-      static const long int MAX_SIZE_SPARSE; 
-  // MaxNr of Nonzero els ins parse cplx matrix
-  static const long int MAX_SIZE_SPARSE_CPLX;
-    // Min. value of matEl to be taken to account; set negative to 
-    // use all non-zero matEls
-      static const double MIN_MATEL_SPARSE; 
+
 
   // Full real matrix structures
   double *mat_full_real;
-    // Max. size of the basis (refers to both FULL_REAL and FULL_COMPLEX
-      static const long int MAX_DIM_FOR_FULL; 
+
 
   // Full complex matrix structures
   dComplex *mat_full_cplx;
   dComplex *x_cplx;
+  //MaxNr of nonzero els. in sparse mat.   .  .  .
+  static const long int MAX_SIZE_SPARSE;
+  // MaxNr of Nonzero els ins parse cplx matrix
+  static const long int MAX_SIZE_SPARSE_CPLX;
+    // Min. value of matEl to be taken to account; set negative to
+    // use all non-zero matEls
+  static const double MIN_MATEL_SPARSE;
+  // Max. size of the basis (refers to both FULL_REAL and FULL_COMPLEX
+  static const long int MAX_DIM_FOR_FULL;
 
 private:
   /*! \var static const int FREQ_REPORT_MATEL
@@ -127,6 +129,7 @@ private:
   int diagonalizeFULLCOMPLEX(int eigsToFind,double *eigvec,double *eigval);
   int diagonalizeSPARSECOMPLEX(int eigsToFind,double *eigvec,double *eigval); 
   
+  void diagonalizeSparseEigen(int eigsToFind, std::vector < double>    & eigvec,std::vector <double> &eigval);
   /* See void setFileOut_FirstGuessOfEigvecs(FILE *new_outf_firstGuess) */
   void writeFirstGuessToFile(int eigsToFind,int dim,double *x);
   int getFirstGuessFromFile(int dim,double *x);
@@ -200,7 +203,7 @@ public:
                    combination of vectors of my_basis)
      eigval        eigenvalues
   */
-  virtual int diagonalize(int eigsToFind,double *eigvec,double *eigval);
+  virtual int diagonalize(int eigsToFind,std::vector<double> & eigvec,std::vector<double> &eigval);
 };
 
 #endif
