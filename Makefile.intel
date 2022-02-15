@@ -7,8 +7,8 @@
 
 ####### Compiler, tools and options
 
-CC            = dpcpp
-CXX           = dpcpp
+CC            = icx
+CXX           = icpx
 DEFINES       = -DMKL -DMKL_ILP64 -DGSL_DLL
 CFLAGS        = -m64 -pipe -O2 -Wall -W -fPIC $(DEFINES)
 CXXFLAGS      = -m64 -pipe -O2 -Wall -W -fPIC $(DEFINES)
