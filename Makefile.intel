@@ -1639,26 +1639,3 @@ release/logger.o: utils/logger.cpp utils/logger.hpp \
 		geometry/CxPosition.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/logger.o utils/logger.cpp
 
-####### Install
-
-install:   FORCE
-
-uninstall:   FORCE
-
-FORCE:
-
-    © 2022 GitHub, Inc.
-
-    Terms
-    Privacy
-    Security
-    Status
-    Docs
-    Contact GitHub
-    Pricing
-    API
-    Training
-    Blog
-    About
-
-Loading complete
