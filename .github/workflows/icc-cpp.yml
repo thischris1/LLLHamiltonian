@@ -32,8 +32,7 @@ jobs:
       run: |
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
-        ifort test.f90 -o test_program
-        mpiifort test2.f90 -o mpitest
+        make -f Makefile.intel
 
     - name: "Test the code"
       run: |
