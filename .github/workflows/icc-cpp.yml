@@ -27,7 +27,7 @@ jobs:
         sudo apt-get install -y intel-oneapi-mkl
         sudo apt-get install -y intel-oneapi-mpi
         sudo apt-get install -y intel-oneapi-mpi-devel
-
+        ls /opt/intel
     - name: Compile
       run: |
         source /opt/intel/oneapi/setvars.sh
