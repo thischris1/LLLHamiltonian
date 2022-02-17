@@ -49,9 +49,9 @@ coef(0)
     	basis_type = new_basis->getBasisType();
     	
       coef=allocK<double>(myBasis->dimension()*dim);
-      for(int i=0;i<dim;i++)
+      for(unsigned int i=0;i<dim;i++)
       {
-		for(int j=0;j<myBasis->dimension();j++)
+		for(unsigned int j=0;j<myBasis->dimension();j++)
 		{
 	  		coef[i*myBasis->dimension()+j]=new_coef[i*myBasis->dimension()+j];
 	  		m_coef.push_back(coef[i*myBasis->dimension()+j]);
@@ -114,7 +114,7 @@ unsigned long int Basis::dimension() const
 }
 
 
-void Basis::setDimension(unsigned long  n_dim)
+void Basis::setDimension(unsigned int  n_dim)
 {
 	if (n_dim < 0)
 	{

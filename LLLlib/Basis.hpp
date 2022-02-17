@@ -40,10 +40,10 @@ public:
   virtual State *operator[](long int i) const =0;
 
   //! Guess what.
-  long int dimension() const;
+ unsigned long int dimension() const;
 
 //!
-	void setDimension(int n_dim);
+	void setDimension(unsigned int n_dim);
   //! Get the i-th component of the n_state-th vector.
   virtual double getCoef(int n_state,int i);
 
