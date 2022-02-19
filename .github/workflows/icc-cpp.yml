@@ -34,10 +34,8 @@ jobs:
       run: |
         source /opt/intel/oneapi/setvars.sh
         echo $CPATH
-        
+        ls /opt/intel/oneapi/mkl/latest/include
         printenv >> $GITHUB_ENV
-        icpx --version
-        compiler --version
         make -f Makefile.intel
 
     - name: "Test the code"
