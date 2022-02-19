@@ -30,6 +30,7 @@ jobs:
     - name: Compile
       run: |
         source /opt/intel/oneapi/setvars.sh  --force -intel64
+        printenv
         echo "oneapi"
         ls /opt/intel/oneapi/
         echo "oneapimkl"
