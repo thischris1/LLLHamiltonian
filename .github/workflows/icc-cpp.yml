@@ -36,7 +36,7 @@ jobs:
         echo "-------------oneapimkl"
         ls /opt/intel/oneapi/mkl
         echo "-----------End of oneapi_mkl ---------------"
-        ls /opt/intel/oneapi/latest
+        ls /opt/intel/oneapi/mkl/latest
         echo "-----------End of oneapi_mkl_latest---------------"
         ls /opt/intel/oneapi/mkl/latest/include
         echo "---------End of oneapi_mkl_lates START of cpath-----------------"
