@@ -31,9 +31,9 @@ jobs:
       run: |
         source /opt/intel/oneapi/setvars.sh  --force -intel64
         printenv
-        echo "oneapi"
+        echo "----------------------------oneapi---------------"
         ls /opt/intel/oneapi/
-        echo "oneapimkl"
+        echo "-------------oneapimkl"
         ls /opt/intel/oneapi/mkl
         echo "-----------End of oneapi_mkl ---------------"
         ls /opt/intel/oneapi/latest
