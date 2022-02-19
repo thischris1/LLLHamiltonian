@@ -34,14 +34,15 @@ jobs:
         ls /opt/intel/oneapi/
         echo "oneapimkl"
         ls /opt/intel/oneapi/mkl
-        echo "--------------------------"
+        echo "-----------End of oneapi_mkl ---------------"
         ls /opt/intel/oneapi/latest
-        echo "--------------------------"
+        echo "-----------End of oneapi_mkl_latest---------------"
         ls /opt/intel/oneapi/mkl/latest/include
-        echo "--------------------------"
+        echo "---------End of oneapi_mkl_lates START of cpath-----------------"
         ls $CPATH
         echo "--------------------------"
         printenv >> $GITHUB_ENV
+        echo $GITHUB_ENV
         make -f Makefile.intel
 
     - name: "Test the code"
