@@ -31,6 +31,7 @@ jobs:
     - name: Compile
       run: |
         source /opt/intel/oneapi/setvars.sh
+        ifort --v
         printenv >> $GITHUB_ENV
         icpx --version
         compiler --version
