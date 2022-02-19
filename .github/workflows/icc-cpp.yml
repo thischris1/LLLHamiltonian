@@ -34,7 +34,11 @@ jobs:
       run: |
         source /opt/intel/oneapi/setvars.sh
         echo $CPATH
+        ls /opt/intel/oneapi/
+        ls /opt/intel/oneapi/mkl
+        ls /opt/intel/oneapi/latest
         ls /opt/intel/oneapi/mkl/latest/include
+        ls $CPATH
         printenv >> $GITHUB_ENV
         make -f Makefile.intel
 
