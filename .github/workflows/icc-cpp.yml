@@ -37,9 +37,13 @@ jobs:
         ls /opt/intel/oneapi/
         echo "oneapimkl"
         ls /opt/intel/oneapi/mkl
+        echo "--------------------------"
         ls /opt/intel/oneapi/latest
+        echo "--------------------------"
         ls /opt/intel/oneapi/mkl/latest/include
+        echo "--------------------------"
         ls $CPATH
+        echo "--------------------------"
         printenv >> $GITHUB_ENV
         make -f Makefile.intel
 
