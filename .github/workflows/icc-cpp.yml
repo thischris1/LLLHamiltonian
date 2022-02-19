@@ -33,8 +33,9 @@ jobs:
     - name: Compile
       run: |
         source /opt/intel/oneapi/setvars.sh
-        echo $CPATH
+        echo "oneapi"
         ls /opt/intel/oneapi/
+        echo "oneapimkl"
         ls /opt/intel/oneapi/mkl
         ls /opt/intel/oneapi/latest
         ls /opt/intel/oneapi/mkl/latest/include
