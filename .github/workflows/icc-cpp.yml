@@ -38,7 +38,7 @@ jobs:
         echo "-----------End of oneapi_mkl ---------------"
         ls /opt/intel/oneapi/mkl/latest
         echo "-----------End of oneapi_mkl_latest---------------"
-        ls /opt/intel/oneapi/mkl/2022.0.2
+        ls /opt/intel/oneapi/mkl/2022.0.2/lib
         echo "---------End of oneapi_mkl_2022.0.2 START of cpath-----------------"
         ls $CPATH
         echo "--------------------------"
