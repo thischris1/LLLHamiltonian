@@ -33,20 +33,9 @@ jobs:
     - name: Compile
       run: |
         source /opt/intel/oneapi/setvars.sh  --force -intel64
-        printenv
-        echo "----------------------------oneapi---------------"
-        ls /opt/intel/oneapi/
-        echo "-------------oneapimkl"
-        ls /opt/intel/oneapi/mkl
-        echo "-----------End of oneapi_mkl ---------------"
-        ls /opt/intel/oneapi/mkl/latest
-        echo "-----------End of oneapi_mkl_latest---------------"
-        ls /opt/intel/oneapi/mkl/2022.0.2/lib
-        echo "---------End of oneapi_mkl_2022.0.2 START of cpath-----------------"
-        ls $CPATH
-        echo "--------------------------"
+        
         printenv >> $GITHUB_ENV
-        echo $GITHUB_ENV
+        
         make -f Makefile.intel
 
     - name: "Test the code"
