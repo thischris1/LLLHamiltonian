@@ -13,6 +13,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: install
+      run: |
+        sudo apt-get install -y libeigen3-dev
+        sudo apt-get install -y libboost-all-dev
+        sudo apt-get install -y libarpack2-dev
+        sudo apt-get install -y libsuperlu-dev
     - name: make
       run: make -f Makefile.Release
     
