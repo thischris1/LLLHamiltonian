@@ -41,7 +41,7 @@
 #include <Eigen/PardisoSupport>
 #include <Eigen/SparseLU>
 
-#include <MatOp/SparseGenMatProd.h>
+//#include <MatOp/SparseGenMatProd.h>
 
 /*! \class Operator
   \brief This class can compute all matrix elements (matEls) of a given operator and
@@ -718,7 +718,7 @@ int Operator::diagonalizeSPARSECOMPLEX(int eigsToFind,
 		glLogger.info("Size of cEigVec novecs=(%d),dim= (%d), eigsToFInd=(%d), (%d)",
 				novecs, dim, eigsToFind,
 				dim*eigsToFind);
-		itmp=mat.diagonalize(cEigVec,eigsToFind,eigval);
+		itmp=mat.diagonalize(&cEigVec[0],eigsToFind,eigval);
 		t2=time(0);
 		tdiff=difftime(t2,t1);
 		Ntime(tdiff,stmp1);
