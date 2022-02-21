@@ -36,7 +36,7 @@
 #include <Eigen/SparseCore>
 #include <Eigen/Sparse>
 #include <Eigen/Eigenvalues>
-#include <armadillo>
+//#include <armadillo>
 
 #include <Eigen/PardisoSupport>
 #include <Eigen/SparseLU>
@@ -708,7 +708,8 @@ int Operator::diagonalizeSPARSECOMPLEX(int eigsToFind,
 			cplx_matEl, nz_elements,
 			dim,eigsToFind,
 			add_to_diag_workspace);
-	std::vector<MKL_Complex16>cEigVec;
+	//std::vector<MKL_Complex16>cEigVec;
+	std::vector<std::complex<double> > cEigVec;
 	cEigVec.reserve(dim*eigsToFind);
 	while(itmp)  // this loop attempts to diagonalize repeatedly (if the first try fails)
 	{
@@ -718,7 +719,7 @@ int Operator::diagonalizeSPARSECOMPLEX(int eigsToFind,
 		glLogger.info("Size of cEigVec novecs=(%d),dim= (%d), eigsToFInd=(%d), (%d)",
 				novecs, dim, eigsToFind,
 				dim*eigsToFind);
-		itmp=mat.diagonalize(cEigVec,eigsToFind,eigval);
+		itmp=mat.diagonalize(&cEigVec[0],eigsToFind,eigval);
 		t2=time(0);
 		tdiff=difftime(t2,t1);
 		Ntime(tdiff,stmp1);
