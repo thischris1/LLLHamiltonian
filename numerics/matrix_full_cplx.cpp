@@ -1,3 +1,4 @@
+
 /*!
  \file matrix_full_cplx.cpp
    \brief Implementation of functions 
@@ -15,7 +16,7 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_eigen.h>
 #else
-#ifdef INTEL
+#ifdef  INTEL
 #include <mkl.h>
 #include <mkl_lapack.h>
 #endif
@@ -181,8 +182,8 @@ int calculateComplexDeterminant (int dimension,
     				theMatrix++;
     				*/
     				std::complex<double> tempVal;
-    				tempVal.real(theMatrix->real);
-    				tempVal.imag(theMatrix->imag);
+    				tempVal.real(theMatrix->real());
+    				tempVal.imag(theMatrix->imag());
     				daMatrix(rowIndex,colIndex) = tempVal;
 
     				theMatrix++;
@@ -306,13 +307,13 @@ int calculateTwoDeterminante(dComplex *theMatrix, std::complex <double> & determ
 	return (0);
 	#else
 	// for MKL here
-	std::complex<double> val0(theMatrix->real, theMatrix->imag);
+	std::complex<double> val0(theMatrix->real(), theMatrix->imag());
 	theMatrix++;
-	std::complex<double> val1(theMatrix->real, theMatrix->imag);
+	std::complex<double> val1(theMatrix->real(), theMatrix->imag());
 	theMatrix++;
-	std::complex<double> val2(theMatrix->real, theMatrix->imag);
+	std::complex<double> val2(theMatrix->real(), theMatrix->imag());
 	theMatrix++;
-	std::complex<double> val3(theMatrix->real, theMatrix->imag);
+	std::complex<double> val3(theMatrix->real(), theMatrix->imag());
 	std::complex<double> tempDet = (val0*val2)-(val1*val3) ;
 	glLogger.debug("calculateTwoDeterminante returns (%f),(%f)",tempDet.real(),tempDet.imag());
 	determinante = tempDet;
@@ -348,7 +349,7 @@ int calculateComplexDeterminanteMKL(int dimension,dComplex *theMatrix, std::comp
 		for (int rowIndex = 0; rowIndex < dimension; ++rowIndex) 
 		{
 			// show matrix
- 			glLogger.debug("Matrix: element (%d), (%d) = (%f) + i(%f)", rowIndex, colIndex, tempMatPtr->real,tempMatPtr->imag);
+ 			glLogger.debug("Matrix: element (%d), (%d) = (%f) + i(%f)", rowIndex, colIndex, tempMatPtr->real(),tempMatPtr->imag());
  			tempMatPtr++;	
 		}
 	}
@@ -368,7 +369,7 @@ int calculateComplexDeterminanteMKL(int dimension,dComplex *theMatrix, std::comp
 		for (int rowIndex = 0; rowIndex < dimension; ++rowIndex) 
 		{
 			// show matrix
- 			glLogger.debug("Matrix: element (%d), (%d) = (%f) + i(%f)", rowIndex, colIndex, tempMatPtr->real,tempMatPtr->imag);
+ 			//glLogger.debug("Matrix: element (%d), (%d) = (%f) + i(%f)", rowIndex, colIndex, tempMatPtr->real,tempMatPtr->imag);
  			tempMatPtr++;	
 		}
 	}
@@ -380,8 +381,8 @@ int calculateComplexDeterminanteMKL(int dimension,dComplex *theMatrix, std::comp
 		for (unsigned int pointer = 0; pointer < dimension*dimension; pointer=pointer + dimension +1) 
 	{
 		
-		float tempReal = theMatrix[pointer].real;
-		float tempImage = theMatrix[pointer].imag;
+		float tempReal = theMatrix[pointer].real();
+		float tempImage = theMatrix[pointer].imag();
 		std::complex<double> tempElement(tempReal,tempImage);
 		storage = storage * tempElement;
 	}
@@ -408,14 +409,14 @@ int calculateComplexDeterminanteMKL(int dimension,dComplex *theMatrix, std::comp
 int multiplyComplex(dComplex& factor1, dComplex &factor2, dComplex & factor)
 {
 	// factor1 = a+ib, factor 2 = c+id
-	double a = factor1.real;
-	double b = factor1.imag;
-	double c = factor2.real;
-	double d = factor2.imag;
+	double a = factor1.real();
+	double b = factor1.imag();
+	double c = factor2.real();
+	double d = factor2.imag();
 	double facReal = (a*c) - (b*d);
 	double facImag = (a*d) + (b*c);
-	factor.real= facReal;
-	factor.imag = facImag;
+	factor.real(facReal);
+	factor.imag (facImag);
 return (0);	
 }
 #endif
