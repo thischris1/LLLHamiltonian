@@ -484,7 +484,7 @@ int Matrix_sparse_cplx::diagLowestOnly(std::complex<double> *eigVec,
 					double *eigval)
 {
   
-  MKL_INT pm[128]{0,1e-10,1};
+  MKL_INT pm[128]{0,0,1};
   matrix_descr descrA;
   descrA.type = SPARSE_MATRIX_TYPE_SYMMETRIC;
   descrA.mode =SPARSE_FILL_MODE_UPPER;
