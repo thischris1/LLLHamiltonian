@@ -40,7 +40,7 @@ jobs:
         printenv >> $GITHUB_ENV
         
         make -f Makefile.intel
-
+        cp libmanyParticle.so.1.0.0 bin/
     - name: "Test the code"
       run: |
         echo "Running the tests using the Intel oneapi fortran compiler"
