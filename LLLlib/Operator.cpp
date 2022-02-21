@@ -36,7 +36,7 @@
 #include <Eigen/SparseCore>
 #include <Eigen/Sparse>
 #include <Eigen/Eigenvalues>
-#include <armadillo>
+//#include <armadillo>
 
 #include <Eigen/PardisoSupport>
 #include <Eigen/SparseLU>
