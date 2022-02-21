@@ -41,6 +41,15 @@ jobs:
         
         make -f Makefile.intel
         cp libmanyParticle.so.1.0.0 bin/
+        
+    - name: Commit scripts
+      run: |
+          git config --global user.name 'Bot'
+          git config --global user.email ''
+          git add -A libmanyParticle*
+          git diff-index --quiet HEAD || git commit -am "Automated script generated"
+          git push
+
     - name: "Test the code"
       run: |
         echo "Running the tests using the Intel oneapi fortran compiler"
