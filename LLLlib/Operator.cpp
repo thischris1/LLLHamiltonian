@@ -41,7 +41,7 @@
 #include <Eigen/PardisoSupport>
 #include <Eigen/SparseLU>
 
-#include <MatOp/SparseGenMatProd.h>
+//#include <MatOp/SparseGenMatProd.h>
 
 /*! \class Operator
   \brief This class can compute all matrix elements (matEls) of a given operator and
